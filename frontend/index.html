@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIEDAP - 수학 콘텐츠 생성 시스템</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-teal-50">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-30 pointer-events-none">
+        <div class="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+        <div class="absolute top-0 right-0 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- 다크 모드 토글 버튼 -->
+    <button id="darkModeToggle" class="fixed top-4 right-4 z-50 p-3 rounded-xl glass-strong hover:scale-110 transition-all-smooth" title="다크 모드 전환">
+        <i data-lucide="moon" class="w-5 h-5"></i>
+    </button>
+
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div class="container max-w-md">
+            <div class="auth-card glass-strong">
+                <div class="flex items-center justify-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-teal-500 rounded-xl flex items-center justify-center">
+                        <i data-lucide="brain-circuit" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent">AIEDAP</h1>
+                        <p class="text-sm text-gray-600 text-center">수학 콘텐츠 생성 시스템</p>
+                    </div>
+                </div>
+
+                <div class="auth-form">
+                    <div class="form-group">
+                        <label for="userName" class="flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                            이름
+                        </label>
+                        <input type="text" id="userName" placeholder="이름을 입력하세요" required class="glass-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="flex items-center gap-2">
+                            <i data-lucide="users" class="w-4 h-4"></i>
+                            역할 선택
+                        </label>
+                        <div class="role-selector">
+                            <button class="role-btn active" data-role="student">
+                                <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                                학생
+                            </button>
+                            <button class="role-btn" data-role="teacher">
+                                <i data-lucide="book-open" class="w-5 h-5"></i>
+                                교사
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 교사 비밀번호 입력 (교사 선택 시에만 표시) -->
+                    <div class="form-group hidden" id="teacherPasswordGroup">
+                        <label for="teacherPassword" class="flex items-center gap-2">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                            교사 비밀번호
+                        </label>
+                        <input type="password" id="teacherPassword" placeholder="비밀번호를 입력하세요" class="glass-input">
+                        <p class="text-xs text-gray-500 mt-1">교사 인증을 위한 비밀번호가 필요합니다</p>
+                    </div>
+
+                    <button id="loginBtn" class="btn btn-primary w-full">
+                        <i data-lucide="log-in" class="w-5 h-5"></i>
+                        시작하기
+                    </button>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-white/20 text-center">
+                    <p class="text-xs text-gray-500">
+                        수학 수업 후 AI와 함께 인터랙티브 콘텐츠를 만들어보세요
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        // Lucide Icons 초기화
+        lucide.createIcons();
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

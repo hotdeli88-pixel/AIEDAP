@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 인터페이스 - AIEDAP</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-teal-50">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-30 pointer-events-none">
+        <div class="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+        <div class="absolute top-0 right-0 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+
+    <!-- 다크 모드 토글 버튼 -->
+    <button id="darkModeToggle" class="fixed top-4 right-4 z-50 p-3 rounded-xl glass-strong hover:scale-110 transition-all-smooth" title="다크 모드 전환">
+        <i data-lucide="moon" class="w-5 h-5"></i>
+    </button>
+
+    <div class="relative z-10 flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 glass-strong shadow-2xl">
+            <div class="p-6 border-b border-white/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-teal-500 rounded-xl flex items-center justify-center">
+                        <i data-lucide="brain-circuit" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-semibold text-gray-800">AIEDAP</h1>
+                        <p class="text-xs text-gray-600">학생 인터페이스</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="p-4 space-y-2">
+                <button onclick="showSection('projects')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all-smooth hover:bg-white/20 active" data-section="projects">
+                    <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+                    <span>내 프로젝트</span>
+                </button>
+
+                <button onclick="showSection('report')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all-smooth hover:bg-white/20" data-section="report">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    <span>평가 리포트</span>
+                </button>
+            </nav>
+
+            <div class="p-4 mt-auto">
+                <div class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm glass">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span id="studentNameSidebar"></span>
+                </div>
+                <button id="logoutBtn" class="w-full mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-white/20 transition-all-smooth">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>로그아웃</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 overflow-y-auto scrollbar-hide">
+            <!-- 프로젝트 목록 섹션 -->
+            <section id="projects-section" class="section glass">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="folder-kanban" class="w-6 h-6"></i>
+                    내 프로젝트
+                </h2>
+
+                <!-- 검색 및 정렬 -->
+                <div class="search-filter-bar">
+                    <div class="search-input-wrapper">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <input type="text" id="searchInput" placeholder="프로젝트 검색..." class="glass-input search-input">
+                    </div>
+                    <select id="sortSelect" class="glass-input sort-select">
+                        <option value="newest">최신순</option>
+                        <option value="oldest">오래된순</option>
+                        <option value="title">제목순</option>
+                        <option value="status">상태순</option>
+                    </select>
+                </div>
+
+                <div id="projectList" class="project-list"></div>
+                <button id="newProjectBtn" class="btn btn-primary">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    새 프로젝트 만들기
+                </button>
+            </section>
+
+            <!-- 프롬프트 제출 섹션 -->
+            <section id="promptSection" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="file-edit" class="w-6 h-6"></i>
+                    프롬프트 제출
+                </h2>
+                <div class="form-group">
+                    <label for="projectTitle" class="flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        프로젝트 제목
+                    </label>
+                    <input type="text" id="projectTitle" placeholder="프로젝트 제목을 입력하세요" required class="glass-input">
+                </div>
+                <div class="form-group">
+                    <label for="promptInput" class="flex items-center gap-2">
+                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                        프롬프트
+                    </label>
+                    <textarea id="promptInput" rows="6" placeholder="수학 수업에서 배운 내용을 바탕으로 만들고 싶은 콘텐츠나 앱에 대해 설명해주세요..." required class="glass-input"></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button id="submitPromptBtn" class="btn btn-primary">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        제출하기
+                    </button>
+                    <button id="cancelBtn" class="btn btn-secondary">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                        취소
+                    </button>
+                </div>
+            </section>
+
+            <!-- AI 평가 결과 섹션 -->
+            <section id="evaluationSection" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    AI 평가 결과
+                </h2>
+                <div id="evaluationResult" class="evaluation-result"></div>
+                <div class="evaluation-actions">
+                    <p class="info-text flex items-center gap-2">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        교사 승인을 기다리는 중...
+                    </p>
+                </div>
+            </section>
+
+            <!-- 생성된 콘텐츠 섹션 -->
+            <section id="contentSection" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="code" class="w-6 h-6"></i>
+                    생성된 콘텐츠
+                </h2>
+                <div id="generatedContent" class="generated-content"></div>
+                <div class="content-actions flex gap-2">
+                    <button id="improveBtn" class="btn btn-primary">
+                        <i data-lucide="arrow-up-circle" class="w-5 h-5"></i>
+                        개선하기
+                    </button>
+                    <button id="viewHistoryBtn" class="btn btn-secondary">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                        히스토리 보기
+                    </button>
+                </div>
+            </section>
+
+            <!-- 프로젝트 히스토리 섹션 -->
+            <section id="historySection" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="history" class="w-6 h-6"></i>
+                    프로젝트 히스토리
+                </h2>
+                <div id="historyList" class="history-list"></div>
+                <button id="backToProjectBtn" class="btn btn-secondary">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    프로젝트로 돌아가기
+                </button>
+            </section>
+
+            <!-- 내 평가 리포트 섹션 -->
+            <section id="report-section" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                    내 평가 리포트
+                </h2>
+                <button id="viewMyReportBtn" class="btn btn-primary">
+                    <i data-lucide="file-bar-chart" class="w-5 h-5"></i>
+                    리포트 보기
+                </button>
+                <div id="myReportSection" class="report-section hidden"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        // Lucide Icons 초기화
+        lucide.createIcons();
+
+        // 사이드바 토글 함수
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // 섹션 표시 함수
+        function showSection(sectionName) {
+            // 모든 섹션 숨기기
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // 모든 네비게이션 버튼 비활성화
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 선택한 섹션 표시
+            const section = document.getElementById(sectionName + '-section') || document.getElementById(sectionName + 'Section');
+            if (section) {
+                section.classList.remove('hidden');
+            }
+
+            // 네비게이션 버튼 활성화
+            const navBtn = document.querySelector(`[data-section="${sectionName}"]`);
+            if (navBtn) {
+                navBtn.classList.add('active');
+            }
+
+            // 모바일에서 사이드바 닫기
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        // 모바일에서 사이드바 외부 클릭 시 닫기
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 768 &&
+                sidebar.classList.contains('open') &&
+                !sidebar.contains(e.target) &&
+                !menuBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+
+    <script src="js/db.js"></script>
+    <script src="js/projectManager.js"></script>
+    <script src="js/student.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // 페이지 로드 시 아이콘 업데이트
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
