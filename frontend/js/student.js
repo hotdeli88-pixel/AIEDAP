@@ -154,6 +154,16 @@ const StudentInterface = {
                         <i data-lucide="eye" class="w-4 h-4"></i>
                         보기
                     </button>
+                    ${project.status === 'approved' ? `
+                        <button class="btn btn-success btn-improve" data-id="${project.id}">
+                            <i data-lucide="arrow-up-circle" class="w-4 h-4"></i>
+                            개선
+                        </button>
+                        <button class="btn btn-secondary btn-history" data-id="${project.id}">
+                            <i data-lucide="history" class="w-4 h-4"></i>
+                            히스토리
+                        </button>
+                    ` : ''}
                     <button class="btn btn-danger btn-delete" data-id="${project.id}">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                         삭제
@@ -176,6 +186,24 @@ const StudentInterface = {
                 e.stopPropagation();
                 const projectId = parseInt(btn.dataset.id);
                 await this.deleteProject(projectId);
+            });
+        });
+
+        // 개선하기 버튼
+        projectList.querySelectorAll('.btn-improve').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const projectId = parseInt(btn.dataset.id);
+                await this.openProjectForImprovement(projectId);
+            });
+        });
+
+        // 히스토리 버튼
+        projectList.querySelectorAll('.btn-history').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const projectId = parseInt(btn.dataset.id);
+                await this.openProjectHistory(projectId);
             });
         });
 
@@ -415,7 +443,7 @@ const StudentInterface = {
                 historyList.innerHTML = '<p class="info-text">아직 히스토리가 없습니다.</p>';
             } else {
                 historyList.innerHTML = versions.map((version, index) => `
-                    <div class="history-item">
+                    <div class="history-item" data-version-id="${version.id}">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h3>버전 ${versions.length - index}</h3>
                             ${ProjectManager.getStatusBadge(version.status)}
@@ -432,8 +460,24 @@ const StudentInterface = {
                                 <strong>평가 점수:</strong> ${version.evaluation.overall_score}/5
                             </div>
                         ` : ''}
+                        ${version.html_content ? `
+                            <div style="margin-top: 10px;">
+                                <button class="btn btn-primary btn-view-content" data-content="${encodeURIComponent(version.html_content)}">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    생성된 콘텐츠 보기
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                 `).join('');
+
+                // 콘텐츠 보기 버튼 이벤트 연결
+                historyList.querySelectorAll('.btn-view-content').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const htmlContent = decodeURIComponent(btn.dataset.content);
+                        this.showVersionContent(htmlContent);
+                    });
+                });
             }
 
             document.getElementById('contentSection').classList.add('hidden');
@@ -455,6 +499,89 @@ const StudentInterface = {
         document.getElementById('historySection').classList.add('hidden');
         if (this.currentProject && (this.currentProject.html_content || this.currentProject.htmlContent)) {
             document.getElementById('contentSection').classList.remove('hidden');
+        }
+    },
+
+    async openProjectForImprovement(projectId) {
+        try {
+            if (typeof Loading !== 'undefined') {
+                Loading.show('프로젝트 로딩 중...');
+            }
+
+            const project = await ProjectManager.getProject(projectId);
+            if (!project) {
+                if (typeof Toast !== 'undefined') {
+                    Toast.error('프로젝트를 찾을 수 없습니다.');
+                }
+                return;
+            }
+
+            this.currentProject = project;
+            ProjectManager.currentProject = project;
+
+            // 프롬프트 섹션 표시하고 기존 값 채우기
+            this.showPromptSection();
+            document.getElementById('projectTitle').value = project.title;
+            document.getElementById('promptInput').value = project.prompt;
+
+            if (typeof Toast !== 'undefined') {
+                Toast.info('프롬프트를 수정하고 다시 제출하세요.');
+            }
+        } catch (error) {
+            if (typeof Toast !== 'undefined') {
+                Toast.error('프로젝트를 불러오는데 실패했습니다.');
+            }
+            console.error(error);
+        } finally {
+            if (typeof Loading !== 'undefined') {
+                Loading.hide();
+            }
+        }
+    },
+
+    async openProjectHistory(projectId) {
+        try {
+            if (typeof Loading !== 'undefined') {
+                Loading.show('프로젝트 로딩 중...');
+            }
+
+            const project = await ProjectManager.getProject(projectId);
+            if (!project) {
+                if (typeof Toast !== 'undefined') {
+                    Toast.error('프로젝트를 찾을 수 없습니다.');
+                }
+                return;
+            }
+
+            this.currentProject = project;
+            ProjectManager.currentProject = project;
+
+            await this.showHistory();
+        } catch (error) {
+            if (typeof Toast !== 'undefined') {
+                Toast.error('히스토리를 불러오는데 실패했습니다.');
+            }
+            console.error(error);
+        } finally {
+            if (typeof Loading !== 'undefined') {
+                Loading.hide();
+            }
+        }
+    },
+
+    showVersionContent(htmlContent) {
+        // 새 창에서 생성된 콘텐츠 표시
+        const newWindow = window.open('', '_blank', 'width=800,height=600');
+        if (newWindow) {
+            newWindow.document.write(htmlContent);
+            newWindow.document.close();
+        } else {
+            // 팝업이 차단된 경우 모달로 표시
+            if (typeof Modal !== 'undefined') {
+                Modal.show('생성된 콘텐츠', `<iframe srcdoc="${htmlContent.replace(/"/g, '&quot;')}" style="width:100%;height:400px;border:none;"></iframe>`);
+            } else {
+                alert('팝업이 차단되었습니다. 팝업을 허용해주세요.');
+            }
         }
     },
 
