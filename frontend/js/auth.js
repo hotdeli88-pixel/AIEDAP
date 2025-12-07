@@ -164,45 +164,52 @@ const AuthManager = {
     },
 
     loadUser() {
-        const userData = localStorage.getItem('currentUser');
-        if (userData) {
-            this.currentUser = JSON.parse(userData);
+        try {
+            const userData = localStorage.getItem('currentUser');
+            console.log('loadUser - userData:', userData);
+            console.log('loadUser - pathname:', window.location.pathname);
 
-            // 현재 페이지에 사용자 정보 표시
-            const studentNameEl = document.getElementById('studentName');
-            const teacherNameEl = document.getElementById('teacherName');
-            const studentNameSidebar = document.getElementById('studentNameSidebar');
-            const teacherNameSidebar = document.getElementById('teacherNameSidebar');
+            if (userData) {
+                this.currentUser = JSON.parse(userData);
+                console.log('loadUser - parsed user:', this.currentUser);
 
-            if (studentNameEl && this.currentUser.role === 'student') {
-                studentNameEl.textContent = `${this.currentUser.name} 학생`;
-            }
-            if (teacherNameEl && this.currentUser.role === 'teacher') {
-                teacherNameEl.textContent = `${this.currentUser.name} 교사`;
-            }
-            if (studentNameSidebar && this.currentUser.role === 'student') {
-                studentNameSidebar.textContent = this.currentUser.name;
-            }
-            if (teacherNameSidebar && this.currentUser.role === 'teacher') {
-                teacherNameSidebar.textContent = this.currentUser.name;
-            }
+                // 현재 페이지에 사용자 정보 표시
+                const studentNameEl = document.getElementById('studentName');
+                const teacherNameEl = document.getElementById('teacherName');
+                const studentNameSidebar = document.getElementById('studentNameSidebar');
+                const teacherNameSidebar = document.getElementById('teacherNameSidebar');
 
-            // 아이콘 업데이트
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        } else {
-            // 로그인되지 않은 경우 인덱스 페이지로 리다이렉트 (인덱스 페이지가 아닌 경우)
-            const path = window.location.pathname;
-            const isIndexPage = path.includes('index.html') ||
-                                path === '/' ||
-                                path.endsWith('/') ||
-                                path.endsWith('/AIEDAP') ||
-                                path.endsWith('/AIEDAP/');
+                if (studentNameEl && this.currentUser.role === 'student') {
+                    studentNameEl.textContent = `${this.currentUser.name} 학생`;
+                }
+                if (teacherNameEl && this.currentUser.role === 'teacher') {
+                    teacherNameEl.textContent = `${this.currentUser.name} 교사`;
+                }
+                if (studentNameSidebar && this.currentUser.role === 'student') {
+                    studentNameSidebar.textContent = this.currentUser.name;
+                }
+                if (teacherNameSidebar && this.currentUser.role === 'teacher') {
+                    teacherNameSidebar.textContent = this.currentUser.name;
+                }
 
-            if (!isIndexPage && (path.includes('student.html') || path.includes('teacher.html'))) {
-                window.location.href = 'index.html';
+                // 아이콘 업데이트
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } else {
+                // 로그인되지 않은 경우 인덱스 페이지로 리다이렉트
+                const path = window.location.pathname.toLowerCase();
+                const filename = path.split('/').pop();
+                console.log('loadUser - no user, filename:', filename);
+
+                // student.html 또는 teacher.html에 직접 접근한 경우만 리다이렉트
+                if (filename === 'student.html' || filename === 'teacher.html') {
+                    console.log('loadUser - redirecting to index.html');
+                    window.location.href = 'index.html';
+                }
             }
+        } catch (error) {
+            console.error('loadUser error:', error);
         }
     },
 
