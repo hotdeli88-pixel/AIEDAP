@@ -1,8 +1,8 @@
 // API 설정
 // 배포 후 RENDER_URL을 실제 Render 배포 URL로 변경하세요
 const CONFIG = {
-    // Render 배포 URL (배포 후 수정 필요)
-    RENDER_URL: 'https://aiedap-backend.onrender.com',
+    // Render 배포 URL
+    RENDER_URL: 'https://aiedap.onrender.com',
 
     // 로컬 개발 URL
     LOCAL_URL: 'http://localhost:5000',
