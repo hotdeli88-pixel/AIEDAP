@@ -10,14 +10,15 @@ from database import Database
 load_dotenv()
 
 app = Flask(__name__)
-# CORS 설정: 개발 환경에서 모든 로컬호스트 포트 허용
+# CORS 설정: 개발 환경 및 배포 환경 허용
 CORS(app, origins=[
     "http://localhost:3000",
     "http://localhost:8000",
     "http://localhost:5500",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
-    "http://127.0.0.1:5500"
+    "http://127.0.0.1:5500",
+    "https://hotdeli88-pixel.github.io"
 ])
 
 # 서비스 초기화
