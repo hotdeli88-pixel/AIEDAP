@@ -1,8 +1,8 @@
 // 인증 관리 모듈
 const AuthManager = {
     currentUser: null,
-    // 교사 비밀번호 (실제 환경에서는 서버에서 검증해야 함)
-    TEACHER_PASSWORD: 'aiedap2024',
+    // 교사 비밀번호 설정 (원하는 비밀번호로 변경하세요)
+    TEACHER_PASSWORD: 'teacher1234',
 
     init() {
         this.loadUser();
@@ -193,9 +193,14 @@ const AuthManager = {
             }
         } else {
             // 로그인되지 않은 경우 인덱스 페이지로 리다이렉트 (인덱스 페이지가 아닌 경우)
-            if (!window.location.pathname.includes('index.html') &&
-                window.location.pathname !== '/' &&
-                !window.location.pathname.endsWith('/')) {
+            const path = window.location.pathname;
+            const isIndexPage = path.includes('index.html') ||
+                                path === '/' ||
+                                path.endsWith('/') ||
+                                path.endsWith('/AIEDAP') ||
+                                path.endsWith('/AIEDAP/');
+
+            if (!isIndexPage && (path.includes('student.html') || path.includes('teacher.html'))) {
                 window.location.href = 'index.html';
             }
         }
