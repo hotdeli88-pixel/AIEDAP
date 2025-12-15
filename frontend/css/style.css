@@ -870,3 +870,646 @@ textarea {
     min-width: 120px;
 }
 
+/* Google OAuth 버튼 */
+.btn-google {
+    background: white;
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 24px;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-google:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode .btn-google {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .btn-google:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 경고 버튼 */
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}
+
+/* 구분선 */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.divider span {
+    padding: 0 15px;
+    color: #666;
+    font-size: 14px;
+}
+
+.dark-mode .divider::before,
+.dark-mode .divider::after {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 모달 오버레이 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-content {
+    max-width: 500px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 20px;
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* 역할 선택 버튼 (새 스타일) */
+.role-select-btn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+}
+
+.role-select-btn:hover {
+    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+}
+
+.role-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.role-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.role-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.role-desc {
+    font-size: 14px;
+    color: #666;
+}
+
+.dark-mode .role-select-btn {
+    background: rgba(30, 30, 50, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .role-select-btn:hover {
+    background: rgba(40, 40, 60, 0.6);
+    border-color: rgba(139, 92, 246, 0.4);
+}
+
+.dark-mode .role-title {
+    color: #e0e0e0;
+}
+
+.dark-mode .role-desc {
+    color: #9ca3af;
+}
+
+/* 이미지 업로드 영역 */
+.image-upload-area {
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px dashed rgba(139, 92, 246, 0.3);
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.image-upload-area:hover {
+    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.image-upload-area.dragover {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+}
+
+/* 이미지 미리보기 컨테이너 */
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview-item .remove-btn,
+.image-preview-item .remove-image-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.image-preview-item .remove-btn:hover,
+.image-preview-item .remove-image-btn:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+}
+
+/* 활동 로그 스타일 */
+.activity-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.activity-log-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 상태 뱃지 - withdrawn 추가 */
+.status-badge.withdrawn {
+    background: rgba(107, 114, 128, 0.2);
+    color: #4b5563;
+}
+
+.dark-mode .status-badge.withdrawn {
+    background: rgba(107, 114, 128, 0.3);
+    color: #9ca3af;
+}
+
+/* 토스트 컨테이너 */
+#toast-container {
+    pointer-events: none;
+}
+
+#toast-container > * {
+    pointer-events: auto;
+}
+
+/* 검색 필터 바 다크모드 */
+.dark-mode .search-input-wrapper i {
+    color: #9ca3af;
+}
+
+/* 프로젝트 이미지 썸네일 */
+.project-image-thumb {
+    transition: all 0.3s;
+}
+
+.project-image-thumb:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 점수 아이템 (작은 버전) */
+.score-item-small {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.dark-mode .score-item-small {
+    background: rgba(30, 30, 50, 0.4);
+}
+
+/* 버전 리스트 */
+.versions-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* 상세 섹션 */
+.detail-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4c1d95;
+}
+
+.dark-mode .detail-section h4 {
+    color: #c4b5fd;
+}
+
+/* 히스토리 아이템 - 상태별 색상 */
+.history-item.pending {
+    border-left-color: #fbbf24;
+}
+
+.history-item.approved {
+    border-left-color: #10b981;
+}
+
+.history-item.rejected {
+    border-left-color: #ef4444;
+}
+
+.history-item.withdrawn {
+    border-left-color: #6b7280;
+}
+
+/* 학생 프로젝트 그리드 */
+.student-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .student-projects {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .role-select-btn {
+        padding: 15px;
+    }
+
+    .role-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .image-preview-item {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* ========================================== */
+/* 템플릿 선택 UI 스타일                       */
+/* ========================================== */
+
+.template-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.template-card {
+    padding: 20px;
+    border-radius: 16px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.template-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.15);
+}
+
+.template-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.template-card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.template-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.template-card-body {
+    margin-bottom: 12px;
+}
+
+.template-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 배지 스타일 */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.badge-grade {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    color: white;
+}
+
+.badge-domain {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+}
+
+.badge-code {
+    background: rgba(139, 92, 246, 0.15);
+    color: #7c3aed;
+    font-family: monospace;
+}
+
+/* 성취수준 배지 */
+.achievement-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.achievement-badge.level-A,
+.level-A {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.achievement-badge.level-B,
+.level-B {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.achievement-badge.level-C,
+.level-C {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.achievement-badge.level-D,
+.level-D {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+}
+
+.achievement-badge.level-E,
+.level-E {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+/* 선택된 템플릿 정보 카드 */
+.template-info-card {
+    padding: 20px;
+    border-radius: 16px;
+    border-left: 4px solid #8b5cf6;
+}
+
+.template-info-header {
+    margin-bottom: 16px;
+}
+
+.template-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.template-info-content .info-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.template-info-content .info-row > i {
+    color: #8b5cf6;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.template-info-content .info-row > div {
+    flex: 1;
+}
+
+.template-info-content .info-row strong {
+    display: block;
+    color: #4c1d95;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+/* 피드백 요청됨 상태 배지 */
+.status-badge.feedback_requested {
+    background: rgba(251, 146, 60, 0.2);
+    color: #c2410c;
+}
+
+.dark-mode .status-badge.feedback_requested {
+    background: rgba(251, 146, 60, 0.3);
+    color: #fb923c;
+}
+
+/* 모달 헤더 */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 다크모드 적용 */
+.dark-mode .template-card-header h3 {
+    color: #e0e0e0;
+}
+
+.dark-mode .template-card:hover {
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.25);
+}
+
+.dark-mode .badge-code {
+    background: rgba(139, 92, 246, 0.25);
+    color: #a78bfa;
+}
+
+.dark-mode .template-info-content .info-row strong {
+    color: #c4b5fd;
+}
+
+.dark-mode .modal-header h3 {
+    color: #e0e0e0;
+}
+
+.dark-mode .modal-close {
+    color: #9ca3af;
+}
+
+.dark-mode .modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+/* 개선 이유 박스 */
+.improvement-reason-box {
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.dark-mode .improvement-reason-box {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+/* 히스토리 아이템 - feedback_requested 추가 */
+.history-item.feedback_requested {
+    border-left-color: #fb923c;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .template-list {
+        grid-template-columns: 1fr;
+    }
+
+    .template-card-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .template-info-content .info-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+

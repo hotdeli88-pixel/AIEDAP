@@ -11,12 +11,10 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <link rel="stylesheet" href="css/style.css">
-    <script>
-        // 페이지 로드 즉시 localStorage 확인
-        console.log('=== student.html 로드 시작 ===');
-        console.log('localStorage currentUser:', localStorage.getItem('currentUser'));
-    </script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-teal-50">
     <!-- Background Pattern -->
@@ -57,6 +55,11 @@
                     <span>내 프로젝트</span>
                 </button>
 
+                <button onclick="showSection('activity')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all-smooth hover:bg-white/20" data-section="activity">
+                    <i data-lucide="activity" class="w-5 h-5"></i>
+                    <span>활동 로그</span>
+                </button>
+
                 <button onclick="showSection('report')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all-smooth hover:bg-white/20" data-section="report">
                     <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
                     <span>평가 리포트</span>
@@ -65,7 +68,8 @@
 
             <div class="p-4 mt-auto">
                 <div class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm glass">
-                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <img id="userAvatar" class="w-6 h-6 rounded-full hidden" alt="프로필">
+                    <i data-lucide="user" class="w-4 h-4 user-icon"></i>
                     <span id="studentNameSidebar"></span>
                 </div>
                 <button id="logoutBtn" class="w-full mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-white/20 transition-all-smooth">
@@ -105,12 +109,85 @@
                 </button>
             </section>
 
+            <!-- 템플릿 선택 섹션 -->
+            <section id="templateSelectSection" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="layout-template" class="w-6 h-6"></i>
+                    프로젝트 템플릿 선택
+                </h2>
+                <p class="text-sm text-gray-600 mb-4">프로젝트를 시작하기 전에 템플릿을 선택해주세요.</p>
+
+                <!-- 필터 -->
+                <div class="search-filter-bar mb-4">
+                    <select id="templateGradeFilter" class="glass-input">
+                        <option value="">전체 학년</option>
+                        <option value="1">중학교 1학년</option>
+                        <option value="2">중학교 2학년</option>
+                        <option value="3">중학교 3학년</option>
+                    </select>
+                    <select id="templateDomainFilter" class="glass-input">
+                        <option value="">전체 영역</option>
+                        <option value="number_operation">수와 연산</option>
+                        <option value="algebra">문자와 식</option>
+                        <option value="function">함수</option>
+                        <option value="geometry">기하</option>
+                        <option value="statistics">확률과 통계</option>
+                    </select>
+                </div>
+
+                <!-- 템플릿 목록 -->
+                <div id="templateList" class="template-list"></div>
+
+                <button id="cancelTemplateSelectBtn" class="btn btn-secondary mt-4">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                    취소
+                </button>
+            </section>
+
             <!-- 프롬프트 제출 섹션 -->
             <section id="promptSection" class="section glass hidden">
                 <h2 class="flex items-center gap-2">
                     <i data-lucide="file-edit" class="w-6 h-6"></i>
-                    프롬프트 제출
+                    <span id="promptSectionTitle">프롬프트 제출</span>
                 </h2>
+
+                <!-- 선택된 템플릿 정보 표시 -->
+                <div id="selectedTemplateInfo" class="template-info-card glass mb-4 hidden">
+                    <div class="template-info-header">
+                        <span id="templateBadges" class="flex gap-2"></span>
+                    </div>
+                    <div class="template-info-content">
+                        <div class="info-row">
+                            <i data-lucide="target" class="w-4 h-4"></i>
+                            <div>
+                                <strong>성취기준</strong>
+                                <p id="templateAchievementStandard" class="text-sm"></p>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <i data-lucide="list-checks" class="w-4 h-4"></i>
+                            <div>
+                                <strong>학습목표</strong>
+                                <ul id="templateLearningObjectives" class="text-sm list-disc pl-4"></ul>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                            <div>
+                                <strong>교사 지침</strong>
+                                <p id="templateGuidelines" class="text-sm"></p>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <i data-lucide="award" class="w-4 h-4"></i>
+                            <div>
+                                <strong>기대 성취수준</strong>
+                                <span id="templateExpectedLevel" class="achievement-badge"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="projectTitle" class="flex items-center gap-2">
                         <i data-lucide="file-text" class="w-4 h-4"></i>
@@ -125,6 +202,24 @@
                     </label>
                     <textarea id="promptInput" rows="6" placeholder="수학 수업에서 배운 내용을 바탕으로 만들고 싶은 콘텐츠나 앱에 대해 설명해주세요..." required class="glass-input"></textarea>
                 </div>
+
+                <!-- 이미지 업로드 영역 -->
+                <div class="form-group">
+                    <label class="flex items-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        이미지 첨부 (선택, 최대 5개)
+                    </label>
+                    <div id="imageUploadArea" class="image-upload-area glass">
+                        <input type="file" id="imageInput" multiple accept="image/*" class="hidden">
+                        <button type="button" id="selectImagesBtn" class="btn btn-secondary">
+                            <i data-lucide="upload" class="w-5 h-5"></i>
+                            이미지 선택
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">PNG, JPG, GIF 형식 지원 (각 5MB 이하)</p>
+                    </div>
+                    <div id="imagePreviewContainer" class="image-preview-container"></div>
+                </div>
+
                 <div class="flex gap-2">
                     <button id="submitPromptBtn" class="btn btn-primary">
                         <i data-lucide="send" class="w-5 h-5"></i>
@@ -149,6 +244,66 @@
                         <i data-lucide="clock" class="w-4 h-4"></i>
                         교사 승인을 기다리는 중...
                     </p>
+                    <div class="flex gap-2 mt-4">
+                        <button id="withdrawBtn" class="btn btn-warning">
+                            <i data-lucide="undo-2" class="w-5 h-5"></i>
+                            제출 취소
+                        </button>
+                        <button id="editPendingBtn" class="btn btn-secondary">
+                            <i data-lucide="edit" class="w-5 h-5"></i>
+                            수정하기
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 거부됨 섹션 -->
+            <section id="rejectedSection" class="section glass hidden">
+                <h2 class="flex items-center gap-2 text-red-600">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                    프로젝트가 거부되었습니다
+                </h2>
+                <div class="rejection-info glass p-4 rounded-xl mb-4">
+                    <p class="font-semibold mb-2">거부 사유:</p>
+                    <p id="rejectionReason" class="text-gray-700"></p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="resubmitBtn" class="btn btn-primary">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        수정 후 재제출
+                    </button>
+                    <button id="backToListFromRejected" class="btn btn-secondary">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        목록으로
+                    </button>
+                </div>
+            </section>
+
+            <!-- 피드백 요청됨 섹션 -->
+            <section id="feedbackRequestedSection" class="section glass hidden">
+                <h2 class="flex items-center gap-2 text-amber-600">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    교사 피드백 (재제출 필요)
+                </h2>
+                <div class="feedback-requested-info glass p-4 rounded-xl mb-4 border-l-4 border-amber-500">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 flex-shrink-0 mt-1"></i>
+                        <div>
+                            <p class="font-semibold mb-2">교사님의 피드백:</p>
+                            <p id="teacherFeedbackContent" class="text-gray-700 whitespace-pre-wrap"></p>
+                            <p id="feedbackRequestedAt" class="text-xs text-gray-500 mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="resubmitFromFeedbackBtn" class="btn btn-primary">
+                        <i data-lucide="edit-3" class="w-5 h-5"></i>
+                        프롬프트 수정하기
+                    </button>
+                    <button id="backToListFromFeedback" class="btn btn-secondary">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        목록으로
+                    </button>
                 </div>
             </section>
 
@@ -184,6 +339,15 @@
                 </button>
             </section>
 
+            <!-- 활동 로그 섹션 -->
+            <section id="activity-section" class="section glass hidden">
+                <h2 class="flex items-center gap-2">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                    활동 로그
+                </h2>
+                <div id="activityLogList" class="activity-log-list"></div>
+            </section>
+
             <!-- 내 평가 리포트 섹션 -->
             <section id="report-section" class="section glass hidden">
                 <h2 class="flex items-center gap-2">
@@ -199,7 +363,59 @@
         </main>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2"></div>
+
+    <!-- 개선 이유 입력 모달 -->
+    <div id="improvementReasonModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-5 h-5"></i>
+                    프롬프트 개선
+                </h3>
+                <button type="button" class="modal-close" onclick="StudentInterface.closeImprovementModal()">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        이전 프롬프트
+                    </label>
+                    <div id="previousPromptDisplay" class="glass p-3 rounded-lg text-sm text-gray-600 bg-gray-50 max-h-32 overflow-y-auto"></div>
+                </div>
+                <div class="form-group">
+                    <label for="improvedPromptInput" class="flex items-center gap-2">
+                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        개선된 프롬프트
+                    </label>
+                    <textarea id="improvedPromptInput" rows="5" placeholder="개선된 프롬프트를 입력하세요..." required class="glass-input"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="improvementReasonInput" class="flex items-center gap-2">
+                        <i data-lucide="message-square-text" class="w-4 h-4"></i>
+                        개선 이유 <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="improvementReasonInput" rows="3" placeholder="왜 이렇게 수정했는지 설명해주세요. (예: 실생활 예시를 추가함, 교사 피드백을 반영함 등)" required class="glass-input"></textarea>
+                    <p class="text-xs text-gray-500 mt-1">개선 이유는 필수입니다. 학습 과정을 기록하는 데 중요합니다.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="StudentInterface.closeImprovementModal()">
+                    취소
+                </button>
+                <button type="button" id="submitImprovementBtn" class="btn btn-primary">
+                    <i data-lucide="check" class="w-5 h-5"></i>
+                    개선안 제출
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/utils.js"></script>
+    <script src="js/supabase.js"></script>
     <script>
         // Lucide Icons 초기화
         lucide.createIcons();
@@ -238,6 +454,11 @@
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('open');
             }
+
+            // 활동 로그 섹션 표시 시 로드
+            if (sectionName === 'activity' && typeof StudentInterface !== 'undefined') {
+                StudentInterface.loadActivityLogs();
+            }
         }
 
         // 모바일에서 사이드바 외부 클릭 시 닫기
@@ -254,9 +475,7 @@
     </script>
 
     <script src="js/auth.js"></script>
-    <script src="js/db.js"></script>
     <script src="js/projectManager.js"></script>
-    <script src="js/config.js"></script>
     <script src="js/student.js"></script>
     <script>
         // 페이지 로드 시 아이콘 업데이트
